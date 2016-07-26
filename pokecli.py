@@ -42,14 +42,32 @@ from google.protobuf.internal import encoder
 from geopy.geocoders import GoogleV3
 from s2sphere import CellId, LatLng
 
+cdarkgray = '\033[1;30m'
+cblack = '\033[0;30m'
+cred = '\033[1;31m'
+cdarkred = '\033[0;31m'
+cgreen = '\033[1;32m'
+cdarkgreen = '\033[0;32m'
+cyellow = '\033[1;33m'
+cdarkyellow = '\033[0;33m'
+cblue = '\033[1;34m'
+cdarkblue = '\033[0;34m'
+cmagenta = '\033[1;35m'
+cdarkmagenta = '\033[0;35m'
+ccyan = '\033[1;36m'
+cdarkcyan = '\033[0;36m'
+cgray = '\033[0;37m'
+cwhite = '\033[1;37m'
+cdefault = '\033[0;39m'
+
 log = logging.getLogger(__name__)
 
 def get_pos_by_name(location_name):
     geolocator = GoogleV3()
     loc = geolocator.geocode(location_name)
 
-    log.info('Your given location: %s', loc.address.encode('utf-8'))
-    log.info('lat/long/alt: %s %s %s', loc.latitude, loc.longitude, loc.altitude)
+    log.info(cdarkyellow + 'Your given location:' + cyellow + ' %s' + cdefault, loc.address.encode('utf-8'))
+    log.info(cdarkyellow + 'lat/long/alt:' + cyellow + ' %s %s %s', loc.latitude, loc.longitude, loc.altitude)
 
     return (loc.latitude, loc.longitude, loc.altitude)
 
@@ -82,7 +100,7 @@ def init_config():
         if key not in config.__dict__ or not config.__dict__[key]:
             config.__dict__[key] = value
     if config.auth_service not in ['ptc', 'google']:
-      log.error("Invalid Auth service specified! ('ptc' or 'google')")
+      log.error(cred + "Invalid Auth service specified! ('ptc' or 'google')" + cdefault)
       return None
 
     return config
@@ -91,7 +109,7 @@ def init_config():
 def main():
     # log settings
     # log format
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(module)10s] [%(levelname)5s] %(message)s')
+    logging.basicConfig(level=logging.INFO, format=cgray + '%(asctime)s [' + ccyan + '%(module)10s' + cgray + '] [' + cyellow + '%(levelname)5s' + cgray + ']' + cwhite + ' %(message)s')
     # log level for http request class
     logging.getLogger("requests").setLevel(logging.WARNING)
     # log level for main pgoapi class
@@ -125,7 +143,7 @@ def main():
         try:
             api.main_loop()
         except Exception as e:
-            log.error('Error in main loop, restarting %s', e)
+            log.error(cred + 'Error in main loop, restarting %s' + cdefault, e)
             # restart after sleep
             sleep(30)
             main()

@@ -1,4 +1,22 @@
 
+cdarkgray = '\033[1;30m'
+cblack = '\033[0;30m'
+cred = '\033[1;31m'
+cdarkred = '\033[0;31m'
+cgreen = '\033[1;32m'
+cdarkgreen = '\033[0;32m'
+cyellow = '\033[1;33m'
+cdarkyellow = '\033[0;33m'
+cblue = '\033[1;34m'
+cdarkblue = '\033[0;34m'
+cmagenta = '\033[1;35m'
+cdarkmagenta = '\033[0;35m'
+ccyan = '\033[1;36m'
+cdarkcyan = '\033[0;36m'
+cgray = '\033[0;37m'
+cwhite = '\033[1;37m'
+cdefault = '\033[0;39m'
+
 class Pokemon:
     def __init__(self, pokemon_data, pokemon_names):
         self.pokemon_data = pokemon_data
@@ -45,7 +63,7 @@ class Pokemon:
         self.iv = self.get_iv_percentage()
 
     def __str__(self):
-        return "Nickname: {0}, Type: {1}, CP: {2}, IV: {3}".format(self.nickname, self.pokemon_type, self.cp, self.iv)
+        return (cgray + "Type: " + cwhite + "{1:<16}" + cgray + " CP: " + cwhite + "{2:<4}" + cgray + " IV: " + cwhite + "{3:>.0f}" + cdefault).format(self.nickname, self.pokemon_type, self.cp, self.iv)
 
     def __repr__(self):
         return self.__str__()
@@ -55,4 +73,3 @@ class Pokemon:
 
     def is_valid_pokemon(self):
         return self.pokemon_id > 0
-

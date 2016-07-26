@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import os
 from pgoapi.pokemon import Pokemon
-
+from operator import attrgetter
 
 def pokemonIVPercentage(pokemon):
     return ((pokemon.get('individual_attack', 0) + pokemon.get('individual_stamina', 0) + pokemon.get(
@@ -14,7 +14,7 @@ def get_inventory_data(res, poke_names):
     pokemons = map(lambda x: Pokemon(x['pokemon_data'], poke_names),
                    filter(lambda x: 'pokemon_data' in x,
                           map(lambda x: x.get('inventory_item_data', {}), inventory_items)))
-    inventory_items_pokemon_list = filter(lambda x: not x.is_egg, pokemons)
+    inventory_items_pokemon_list = sorted(filter(lambda x: not x.is_egg, pokemons), key=(attrgetter('iv','cp')), reverse=True)
 
     return os.linesep.join(map(str, inventory_items_pokemon_list))
 

@@ -54,21 +54,21 @@ logger = logging.getLogger(__name__)
 BAD_ITEM_IDS = [101,102,701,702,703] #Potion, Super Potion, RazzBerry, BlukBerry Add 201 to get rid of revive
 
 # Minimum number of these items in the inventory when recycling inventory, everything else will be kept.
-MIN_BAD_ITEM_COUNTS = {Inventory.ITEM_POTION: 10,
-                       Inventory.ITEM_SUPER_POTION: 10,
-                       Inventory.ITEM_HYPER_POTION: 20,
-                       Inventory.ITEM_MAX_POTION: 20,
-                       Inventory.ITEM_BLUK_BERRY: 10,
-                       Inventory.ITEM_NANAB_BERRY: 10,
-                       Inventory.ITEM_REVIVE: 10,
-                       Inventory.ITEM_MAX_REVIVE: 40,
-                       Inventory.ITEM_RAZZ_BERRY: 10
+MIN_BAD_ITEM_COUNTS = {Inventory.ITEM_POTION: 0,
+                       Inventory.ITEM_SUPER_POTION: 0,
+                       Inventory.ITEM_HYPER_POTION: 0,
+                       Inventory.ITEM_MAX_POTION: 50,
+                       Inventory.ITEM_BLUK_BERRY: 0,
+                       Inventory.ITEM_NANAB_BERRY: 0,
+                       Inventory.ITEM_REVIVE: 15,
+                       Inventory.ITEM_MAX_REVIVE: 20,
+                       Inventory.ITEM_RAZZ_BERRY: 5
                        }
 MIN_SIMILAR_POKEMON = 1
 
 # Add more here as you wish. http://www.serebii.net/pokemongo/evolution.shtml
-POKEMON_EVOLUTION = {Enums_pb2.PIDGEY: 12}
-POKEMON_EVOLUTION_FAMILY = {Enums_pb2.PIDGEY: Enums_pb2.FAMILY_PIDGEY}
+POKEMON_EVOLUTION = {Enums_pb2.PIDGEY: 12, Enums_pb2.CATERPIE: 12, Enums_pb2.WEEDLE: 12, Enums_pb2.RATTATA: 25}
+POKEMON_EVOLUTION_FAMILY = {Enums_pb2.PIDGEY: Enums_pb2.FAMILY_PIDGEY, Enums_pb2.CATERPIE: Enums_pb2.FAMILY_CATERPIE, Enums_pb2.WEEDLE: Enums_pb2.FAMILY_WEEDLE, Enums_pb2.RATTATA: Enums_pb2.FAMILY_RATTATA}
 
 class PGoApi:
 

@@ -103,15 +103,21 @@ class Inventory:
             self.master_balls -= 1
 
     def __str__(self):
-        return (cdarkgray + "\nINVENTORY --> " + cdarkcyan + "Poke Balls: " + cdefault + "{0:>3}" + cdarkgray + " |" + cdarkcyan + " Great Balls:  " + cdefault + "{1:>3}" + cdarkgray + " |" + cdarkcyan + " Ultra Balls:  " + cdefault + "{3:>3}" + cdarkgray + " |" + cdarkcyan + " Master Balls: " + cdefault + "{2:>3}" + \
-                cdarkgray + "\nINVENTORY --> " + cred   + "Potion:     " + cdefault + "{4:>3}" + cdarkgray + " |" + cred   + " Super Potion: " + cdefault + "{5:>3}" + cdarkgray + " |" + cred   + " Hyper Potion: " + cdefault + "{7:>3}" + cdarkgray + " |" + cred   + " Max Potion:   " + cdefault + "{6:>3}" + cred + "").format(self.poke_balls,
-                                                                                        self.great_balls if self.great_balls > 0 else "-",
-                                                                                        self.master_balls if self.master_balls > 0 else "-",
-                                                                                        self.ultra_balls if self.ultra_balls > 0 else "-",
-                                                                                        self.potion if self.potion > 0 else "-",
-                                                                                        self.super_potion if self.super_potion > 0 else "-",
-                                                                                        self.max_potion if self.max_potion > 0 else "-",
-                                                                                        self.hyper_potion if self.hyper_potion > 0 else "-")
+        return (cwhite + "{0}" + ccyan + " x " + cdarkcyan + "Poke Balls"  + cmagenta + " / " + \
+                cwhite + "{1}" + ccyan + " x " + cdarkcyan + "Great Balls" + cmagenta + " / " + \
+                cwhite + "{3}" + ccyan + " x " + cdarkcyan + "Ultra Balls" + cmagenta + " / " + \
+                cwhite + "{2}" + ccyan + " x " + cdarkcyan + "Master Balls" + cdefault \
+                ).format(self.poke_balls,
+                #cdefault + "{0}" + cmagenta + "x" + cdarkcyan +  + cmagenta + " /" + cdarkcyan + " Ultra Balls: " + cdefault + "{3:>3}" + cmagenta + " /" + cdarkcyan + " Master Balls: " + cdefault + "{2:>3}" + cdefault).format(self.poke_balls,
+                #cmagenta + "\nINVENTORY --> " + cdarkcyan + "Poke Balls: " + cdefault + "{0:>3}" + cmagenta + " |" + cdarkcyan + " Great Balls:  " + cdefault + "{1:>3}" + cmagenta + " |" + cdarkcyan + " Ultra Balls:  " + cdefault + "{3:>3}" + cmagenta + " |" + cdarkcyan + " Master Balls: " + cdefault + "{2:>3}" + cmagenta + "|" + \
+                #cmagenta + "\nINVENTORY --> " + cred   + "Potion:     " + cdefault + "{4:>3}" + cmagenta + " |" + cred   + " Super Potion: " + cdefault + "{5:>3}" + cmagenta + " |" + cred   + " Hyper Potion: " + cdefault + "{7:>3}" + cmagenta + " |" + cred   + " Max Potion:   " + cdefault + "{6:>3}" + cmagenta + "|" + cdefault).format(self.poke_balls,
+                                                                                        self.great_balls,
+                                                                                        self.master_balls,
+                                                                                        self.ultra_balls,
+                                                                                        self.potion,
+                                                                                        self.super_potion,
+                                                                                        self.max_potion,
+                                                                                        self.hyper_potion)
 
     def __repr__(self):
         return self.__str__()

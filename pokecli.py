@@ -109,7 +109,7 @@ def init_config():
 def main():
     # log settings
     # log format
-    logging.basicConfig(level=logging.INFO, format=cgray + '%(asctime)s [' + ccyan + '%(module)10s' + cgray + '] [' + cyellow + '%(levelname)5s' + cgray + ']' + cwhite + ' %(message)s')
+    logging.basicConfig(level=logging.INFO, format=cgray + '%(asctime)s : [' + ccyan + '%(module)s' + cgray + '] : [' + cyellow + '%(levelname)s' + cgray + '] >' + cwhite + ' %(message)s')
     # log level for http request class
     logging.getLogger("requests").setLevel(logging.WARNING)
     # log level for main pgoapi class

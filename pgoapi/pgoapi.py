@@ -227,7 +227,7 @@ class PGoApi:
                 res['responses']['lat'] = self._posf[0]
                 res['responses']['lng'] = self._posf[1]
                 f.write(json.dumps(res['responses'], indent=2))
-            nlimit = 6
+            nlimit = 8
             order = 'cp'
             self.log.info((cdarkmagenta + "[" + cmagenta + "POKEMON INVENTORY" + cdarkmagenta + "]" + cdarkgray + " (top {0} by CP)\n" + \
                                      get_inventory_data(res, self.pokemon_names, order, nlimit) + cdefault).format(nlimit))
@@ -315,7 +315,7 @@ class PGoApi:
         if len(destinations) >= 20:
             destinations = destinations[:20]
         furthest_fort = destinations[0][0]
-        self.log.info(cyellow + "Starting walk to Pokestop " + cdarkyellow + "@ " + clink + "http://maps.google.com/maps?q=%s,%s" + cdefault, furthest_fort['latitude'], furthest_fort['longitude'])
+        self.log.info(cgreen + "Starting walk to Pokestop " + cdarkgreen + "@ " + clink + "http://maps.google.com/maps?q=%s,%s" + cdefault, furthest_fort['latitude'], furthest_fort['longitude'])
         self.walk_to((furthest_fort['latitude'], furthest_fort['longitude']),
                      map(lambda x: "via:%f,%f" % (x[0]['latitude'], x[0]['longitude']), destinations[1:]))
         return True
@@ -336,7 +336,7 @@ class PGoApi:
             return False
         for fort_data in destinations:
             fort = fort_data[0]
-            self.log.info(cyellow + "Starting walk to Pokestop " + cdarkyellow + "@ " + clink + "http://maps.google.com/maps?q=%s,%s" + cdefault, fort['latitude'], fort['longitude'])
+            self.log.info(cgreen + "Starting walk to Pokestop " + cdarkgreen + "@ " + clink + "http://maps.google.com/maps?q=%s,%s" + cdefault, fort['latitude'], fort['longitude'])
             self.walk_to((fort['latitude'], fort['longitude']))
             self.fort_search_pgoapi(fort, self.get_position(), fort_data[1])
             if 'lure_info' in fort:
@@ -363,7 +363,7 @@ class PGoApi:
             self.log.debug("Catching pokemon: : %s, distance: %f meters", target[0], target[1])
             self.log.info(cdarkgreen + "Catching Pokemon:" + cgreen + " %s" + cdefault, self.pokemon_names[str(target[0]['pokemon_id'])])
             catches_successful &= self.encounter_pokemon(target[0])
-            sleep(random.randrange(4, 8))
+            sleep(random.randrange(3, 4))
         return catches_successful
 
     def nearby_map_objects(self):
@@ -410,12 +410,12 @@ class PGoApi:
                 if item['item_id'] in self.MIN_ITEMS and "count" in item and item['count'] > self.MIN_ITEMS[
                     item['item_id']]:
                     recycle_count = item['count'] - self.MIN_ITEMS[item['item_id']]
-                    self.log.info((cdarkcyan + "Recycling (ID): " + cwhite + "{1} " + cdarkgray + "x" + ccyan + "{0}" + cdefault).format(item['item_id'], recycle_count))
+                    self.log.info((cdarkcyan + "Recycling (ID): " + cwhite + "{1}" + cdarkgray + "x" + ccyan + "{0}" + cdefault).format(item['item_id'], recycle_count))
                     res = self.recycle_inventory_item(item_id=item['item_id'], count=recycle_count).call()['responses'][
                         'RECYCLE_INVENTORY_ITEM']
                     response_code = res['result']
                     if response_code == 1:
-                        self.log.info((cdarkcyan + "Recycled (ID): " + ccyan + " {0}" + cdarkgray + " / " + cdarkcyan + "New Count: " + ccyan + "{1}" + cdefault).format(item['item_id'], res.get('new_count', 0)))
+                        self.log.info((cdarkcyan + "Recycled (ID): " + ccyan + "{0}" + cdarkgray + " / " + cdarkcyan + "New Count: " + cwhite + "{1}" + cdefault).format(item['item_id'], res.get('new_count', 0)))
                     else:
                         self.log.info(cdarkred + "Failed to recycle Item:" + cred + " %s" + cdarkred + ", Code:" + cred + " %s" + cdefault, item['item_id'], response_code)
                     sleep(2)
@@ -454,7 +454,7 @@ class PGoApi:
                         else:
                             self.log.debug("Failed to release pokemon %s, %s", pokemon, release_res)
                             self.log.info("Failed to release Pokemon %s", pokemon)
-                        sleep(3)
+                        sleep(2)
 
     def is_pokemon_eligible_for_transfer(self, pokemon):
         return (pokemon.pokemon_id in self.throw_pokemon_ids and not pokemon.is_favorite) \

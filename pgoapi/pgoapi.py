@@ -363,7 +363,7 @@ class PGoApi:
             self.log.debug("Catching pokemon: : %s, distance: %f meters", target[0], target[1])
             self.log.info(cdarkgreen + "Catching Pokemon:" + cgreen + " %s" + cdefault, self.pokemon_names[str(target[0]['pokemon_id'])])
             catches_successful &= self.encounter_pokemon(target[0])
-            sleep(random.randrange(3, 4))
+            sleep(random.randrange(2, 3))
         return catches_successful
 
     def nearby_map_objects(self):
@@ -518,8 +518,8 @@ class PGoApi:
             encounter_id = lureinfo['encounter_id']
             fort_id = lureinfo['fort_id']
             position = self._posf
-            self.log.debug("At Fort with lure %s".encode('ascii', 'ignore'), lureinfo)
-            self.log.info("At Fort with Lure AND Active Pokemon %s",
+            self.log.debug("At Pokestop with lure %s".encode('ascii', 'ignore'), lureinfo)
+            self.log.info(cdarkgreen + "At Pokestop with Lure AND Active Pokemon: " + cgreen + "%s" + cdefault,
                           self.pokemon_names.get(str(lureinfo.get('active_pokemon_id', 0)), "NA"))
             resp = self.disk_encounter(encounter_id=encounter_id, fort_id=fort_id, player_latitude=position[0],
                                        player_longitude=position[1]).call()['responses']['DISK_ENCOUNTER']
@@ -530,14 +530,14 @@ class PGoApi:
                     capture_status = catch_attempt['status']
                     if capture_status == 1:
                         self.log.debug("(LURE) Caught Pokemon: : %s", catch_attempt)
-                        self.log.info("(LURE) Caught Pokemon:  %s",
+                        self.log.info(cdarkgreen + "(LURE) Caught Pokemon: " + cgreen + "%s" + cdefault,
                                       self.pokemon_names.get(str(lureinfo.get('active_pokemon_id', 0)), "NA"))
                         self.pokemon_caught += 1
-                        sleep(2)
+                        #sleep(2)
                         return True
                     elif capture_status != 2:
                         self.log.debug("(LURE) Failed Catch: : %s", catch_attempt)
-                        self.log.info("(LURE) Failed to catch Pokemon:  %s",
+                        self.log.info(cdarkred + "(LURE) Failed to catch Pokemon: " + cred + "%s" + cdefault,
                                       self.pokemon_names.get(str(lureinfo.get('active_pokemon_id', 0)), "NA"))
                         return False
                     sleep(2)
@@ -580,7 +580,7 @@ class PGoApi:
                     self.log.debug(cdarkgreen + "Caught Pokemon:" + cgreen + " %s" + cdefault, catch_attempt)
                     self.log.info(cdarkgreen + "Caught Pokemon:" + cgreen + " %s" + cdefault, self.pokemon_names.get(str(pokemon['pokemon_id']), "NA"))
                     self.pokemon_caught += 1
-                    sleep(2)
+                    #sleep(2)
                     return True
                 elif capture_status != 2:
                     self.log.debug("Failed Catch: : %s", catch_attempt)
@@ -668,7 +668,7 @@ class PGoApi:
                 self.spin_near_fort()
             # if catching fails 10 times, maybe you are sofbanned.
             while self.catch_near_pokemon() and catch_attempt <= self.max_catch_attempts:
-                sleep(4)
+                sleep(3)
                 catch_attempt += 1
                 pass
             if catch_attempt > self.max_catch_attempts:

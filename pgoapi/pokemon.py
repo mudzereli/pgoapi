@@ -18,7 +18,7 @@ cwhite = '\033[1;37m'
 cdefault = '\033[0;39m'
 
 class Pokemon:
-    def __init__(self, pokemon_data, pokemon_names):
+    def __init__(self, pokemon_data, pokemon_names, additional_data=None):
         self.pokemon_data = pokemon_data
         self.stamina = 0
         self.pokemon_id = 0
@@ -41,6 +41,7 @@ class Pokemon:
         self.iv = 0.0
         self.parse_values()
         self.pokemon_type = pokemon_names.get(str(self.pokemon_id), "NA").encode('ascii', 'ignore')
+        self.pokemon_additional_data = additional_data
 
     def parse_values(self):
         self.stamina = self.pokemon_data.get('stamina', 0)

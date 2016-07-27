@@ -85,7 +85,7 @@ def init_config():
     required = lambda x: not x in load['accounts'][0].keys()
     parser.add_argument("-a", "--auth_service", help="Auth Service ('ptc' or 'google')",
         required=required("auth_service"))
-    parser.add_argument("-i", "--config_index", help="config_index", required=required("config_index"))
+    parser.add_argument("-i", "--config_index", help="config_index", default=0, type=int)
     parser.add_argument("-u", "--username", help="Username", required=required("username"))
     parser.add_argument("-p", "--password", help="Password", required=required("password"))
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
@@ -94,7 +94,7 @@ def init_config():
     parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
     parser.set_defaults(DEBUG=False, TEST=False,CACHED=False)
     config = parser.parse_args()
-    load = load['accounts'][int(config.__dict__['config_index'])]
+    load = load['accounts'][config.__dict__['config_index']]
     # Passed in arguments shoud trump
     for key,value in load.iteritems():
         if key not in config.__dict__ or not config.__dict__[key]:
@@ -137,8 +137,12 @@ def main():
     # provide player position on the earth
     api.set_position(*position)
 
-    if not api.login(config.auth_service, config.username, config.password, config.cached):
-        return
+    # retry login every 30 seconds if any errors
+    while not api.login(config.auth_service, config.username, config.password, config.cached):
+        log.error('Retrying Login in 30 seconds')
+        sleep(30)
+
+    # main loop
     while True:
         try:
             api.main_loop()

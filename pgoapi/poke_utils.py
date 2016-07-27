@@ -28,13 +28,13 @@ def pokemonIVPercentage(pokemon):
         'individual_defense', 0) + 0.0) / 45.0) * 100.0
 
 
-def get_inventory_data(res, poke_names):
+def get_inventory_data(res, poke_names, order, nlimit):
     inventory_delta = res['responses']['GET_INVENTORY'].get('inventory_delta', {})
     inventory_items = inventory_delta.get('inventory_items', [])
     pokemons = map(lambda x: Pokemon(x['pokemon_data'], poke_names),
                    filter(lambda x: 'pokemon_data' in x,
                           map(lambda x: x.get('inventory_item_data', {}), inventory_items)))
-    inventory_items_pokemon_list = sorted(filter(lambda x: not x.is_egg, pokemons), key=(attrgetter('iv','cp')), reverse=True)
+    inventory_items_pokemon_list = sorted(filter(lambda x: not x.is_egg, pokemons), key=(attrgetter(order)), reverse=True)[:nlimit]
 
     return os.linesep.join(map(str, inventory_items_pokemon_list))
 

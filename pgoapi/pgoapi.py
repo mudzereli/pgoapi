@@ -227,8 +227,13 @@ class PGoApi:
                 res['responses']['lat'] = self._posf[0]
                 res['responses']['lng'] = self._posf[1]
                 f.write(json.dumps(res['responses'], indent=2))
-            self.log.info(cdarkmagenta + "[" + cmagenta + "GET_INVENTORY" + cdarkmagenta + "]\n" + \
-                         get_inventory_data(res, self.pokemon_names) + cdefault)
+            nlimit = 6
+            order = 'cp'
+            self.log.info((cdarkmagenta + "[" + cmagenta + "POKEMON INVENTORY" + cdarkmagenta + "]" + cdarkgray + " (top {0} by CP)\n" + \
+                                     get_inventory_data(res, self.pokemon_names, order, nlimit) + cdefault).format(nlimit))
+            order = 'iv'
+            self.log.info((cdarkmagenta + "[" + cmagenta + "POKEMON INVENTORY" + cdarkmagenta + "]" + cdarkgray + " (top {0} by IV)\n" + \
+                                     get_inventory_data(res, self.pokemon_names, order, nlimit) + cdefault).format(nlimit))
             # self.log.info(cblue + "Player Items:" + cwhite + " %s" + cdefault, self.inventory)
             self.inventory = Player_Inventory(res['responses']['GET_INVENTORY']['inventory_delta']['inventory_items'])
             self.log.debug(self.cleanup_inventory(self.inventory.inventory_items))
@@ -279,8 +284,8 @@ class PGoApi:
                                player_latitude=player_postion[0],
                                player_longitude=player_postion[1]).call()['responses']['FORT_SEARCH']
         if res['result'] == 1:
-            self.log.debug(cyellow + "Used Pokestop" + cdarkyellow + " @ " + cyellow + " %s" + cdefault, res)
-            self.log.info(cyellow + "Used Pokestop" + cdarkyellow + " @ " + clink + "http://maps.google.com/maps?q=%s,%s" + cdefault, fort['latitude'], fort['longitude'])
+            self.log.debug(cgreen + "Used Pokestop" + cdarkgreen + " @ " + cgreen + " %s" + cdefault, res)
+            self.log.info(cgreen + "Used Pokestop" + cdarkgreen + " @ " + clink + "http://maps.google.com/maps?q=%s,%s" + cdefault, fort['latitude'], fort['longitude'])
             self.visited_forts[fort['id']] = fort
         elif res['result'] == 4:
             self.log.debug("Pokestop Used but Your inventory is full : %s", res)
@@ -405,12 +410,12 @@ class PGoApi:
                 if item['item_id'] in self.MIN_ITEMS and "count" in item and item['count'] > self.MIN_ITEMS[
                     item['item_id']]:
                     recycle_count = item['count'] - self.MIN_ITEMS[item['item_id']]
-                    self.log.info((cdarkcyan + "Recycling Item (ID):" + ccyan + " {0:>3}" + cdarkcyan + ", Item Count:" + ccyan + " {1:>3}" + cdefault).format(item['item_id'], recycle_count))
+                    self.log.info((cdarkcyan + "Recycling (ID): " + cwhite + "{1} " + cdarkgray + "x" + ccyan + "{0}" + cdefault).format(item['item_id'], recycle_count))
                     res = self.recycle_inventory_item(item_id=item['item_id'], count=recycle_count).call()['responses'][
                         'RECYCLE_INVENTORY_ITEM']
                     response_code = res['result']
                     if response_code == 1:
-                        self.log.info((cdarkcyan + "Recycled Item (ID): " + ccyan + " {0:>3}" + cdarkcyan + ", New Count: " + ccyan + " {1:>3}" + cdefault).format(item['item_id'], res.get('new_count', 0)))
+                        self.log.info((cdarkcyan + "Recycled (ID): " + ccyan + " {0}" + cdarkgray + " / " + cdarkcyan + "New Count: " + ccyan + "{1}" + cdefault).format(item['item_id'], res.get('new_count', 0)))
                     else:
                         self.log.info(cdarkred + "Failed to recycle Item:" + cred + " %s" + cdarkred + ", Code:" + cred + " %s" + cdefault, item['item_id'], response_code)
                     sleep(2)

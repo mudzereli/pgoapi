@@ -101,6 +101,10 @@ class PGoApi:
 
         self.pokemon_names = pokemon_names
 
+        self.start_time = time()
+        self.exp_start = None
+        self.exp_current = None
+
         self.MIN_ITEMS = {}
         for k, v in config.get("MIN_ITEMS", {}).items():
             self.MIN_ITEMS[getattr(Inventory, k)] = v
@@ -209,6 +213,20 @@ class PGoApi:
         else:
             raise AttributeError
 
+    def hourly_exp(self, exp):
+        if self.exp_start is None:
+            self.exp_start = exp
+        self.exp_current = exp
+
+        run_time = time() - self.start_time
+        run_time_hours = float(run_time/3600.00)
+        exp_earned = float(self.exp_current - self.exp_start)
+        exp_hour = float(exp_earned/run_time_hours)
+
+        self.log.info((cred + "XP/HR" + cdarkred + ": " + cwhite + "{0:>.0f}" + cdefault).format(exp_hour))
+
+        return exp_hour
+
     def update_player_inventory(self):
         self.get_inventory()
         res = self.call()
@@ -247,12 +265,13 @@ class PGoApi:
                 if "player_stats" in inventory_item['inventory_item_data']:
                     self.player_stats = PlayerStats(inventory_item['inventory_item_data']['player_stats'])
                     self.log.info(cdarkcyan + "Player Stats: " + cwhite + "%s" + cdefault, self.player_stats)
+                    self.hourly_exp(self.player_stats.experience)
             if self.LIST_INVENTORY_BEFORE_CLEANUP:
                 self.log.info(cred + "Inventory Before Cleanup: " + cwhite + "%s" + cdefault, self.inventory)
             self.log.debug(self.cleanup_inventory(self.inventory.inventory_items))
             self.log.info(cred + "Inventory After Cleanup: " + cwhite + "%s" + cdefault, self.inventory)
             if self.LIST_POKEMON_BEFORE_CLEANUP:
-                self.log.info(cdarkmagenta + "[" + cmagenta + "POKEMON INVENTORY" + cdarkmagenta + "]" + cdarkgray + " (top 10 by CP)\n" + \
+                self.log.info(cdarkmagenta + "[" + cmagenta + "POKEMON INVENTORY" + cdarkmagenta + "]" + cgray + " (top 10 by CP)\n" + \
                     get_inventory_data(res, self.pokemon_names, 'cp', 10))
             self.incubate_eggs()
             self.attempt_evolve(self.inventory.inventory_items)

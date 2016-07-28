@@ -61,7 +61,8 @@ cwhite = '\033[1;37m'
 cdefault = '\033[0;39m'
 
 log = logging.getLogger(__name__)
-
+from threading import Thread
+from Queue import Queue
 def get_pos_by_name(location_name):
     geolocator = GoogleV3()
     loc = geolocator.geocode(location_name)
@@ -83,16 +84,9 @@ def init_config():
 
     # Read passed in Arguments
     required = lambda x: not x in load['accounts'][0].keys()
-    parser.add_argument("-a", "--auth_service", help="Auth Service ('ptc' or 'google')",
-        required=required("auth_service"))
-    parser.add_argument("-i", "--config_index", help="config_index", default=0, type=int)
-    parser.add_argument("-u", "--username", help="Username", required=required("username"))
-    parser.add_argument("-p", "--password", help="Password", required=required("password"))
+    parser.add_argument("-i", "--config_index", help="Index of account in config.json", default=0, type=int)
     parser.add_argument("-l", "--location", help="Location", required=required("location"))
-    parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true')
-    parser.add_argument("-c", "--cached", help="cached", action='store_true')
-    parser.add_argument("-t", "--test", help="Only parse the specified location", action='store_true')
-    parser.set_defaults(DEBUG=False, TEST=False,CACHED=False)
+    parser.add_argument("-d", "--debug", help="Debug Mode", action='store_true', default=False)
     config = parser.parse_args()
     load = load['accounts'][config.__dict__['config_index']]
     # Passed in arguments shoud trump
@@ -103,8 +97,7 @@ def init_config():
       log.error(cred + "Invalid Auth service specified! ('ptc' or 'google')" + cdefault)
       return None
 
-    return config
-
+    return config.__dict__
 
 def main():
     # log settings
@@ -121,24 +114,22 @@ def main():
     if not config:
         return
 
-    if config.debug:
+    if config["debug"]:
         logging.getLogger("requests").setLevel(logging.DEBUG)
         logging.getLogger("pgoapi").setLevel(logging.DEBUG)
         logging.getLogger("rpc_api").setLevel(logging.DEBUG)
 
-    position = get_pos_by_name(config.location)
-    if config.test:
-        return
+    position = get_pos_by_name(config["location"])
 
     # instantiate pgoapi
     pokemon_names = json.load(open("pokemon.en.json"))
-    api = PGoApi(config.__dict__, pokemon_names)
+    api = PGoApi(config, pokemon_names)
 
     # provide player position on the earth
     api.set_position(*position)
 
     # retry login every 30 seconds if any errors
-    while not api.login(config.auth_service, config.username, config.password, config.cached):
+    while not api.login(config["auth_service"], config["username"], config["password"]):
         log.error('Retrying Login in 30 seconds')
         sleep(30)
 
@@ -151,8 +142,6 @@ def main():
             # restart after sleep
             sleep(30)
             main()
-
-    import ipdb; ipdb.set_trace()
 
 if __name__ == '__main__':
     main()

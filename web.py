@@ -1,4 +1,4 @@
-# DISCLAIMER: This
+# DISCLAIMER: This is jank
 from flask import Flask, render_template
 import json
 import csv
@@ -21,7 +21,11 @@ with open ("GAME_MASTER_POKEMON_v0_2.tsv") as tsv:
             "family_id": family_id
         }
 
-
+attacks = {}
+with open ("GAME_ATTACKS_v0_1.tsv") as tsv:
+    reader = csv.DictReader(tsv, delimiter='\t')
+    for row in reader:
+        attacks[int(row["Num"])] = row["Move"]
 
 @app.route("/<username>/pokemon")
 def inventory(username):
@@ -51,7 +55,9 @@ def inventory(username):
         # add candy back into pokemon json
         for pokemon in pokemons:
             pokemon['candy'] = candy[pokemon['family_id']]
-        return render_template('pokemon.html', pokemons=pokemons, player=player,currency="{:,d}".format(currency), candy=candy,latlng=latlng)
+        player['level_xp'] = player['experience']-player['prev_level_xp']
+        player['goal_xp'] = player['next_level_xp']-player['prev_level_xp']
+        return render_template('pokemon.html', pokemons=pokemons, player=player, currency="{:,d}".format(currency), candy=candy, latlng=latlng, attacks=attacks)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',debug=True)

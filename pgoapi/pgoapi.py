@@ -331,7 +331,7 @@ class PGoApi:
                                       self.experimental)
         if not destinations:
             self.log.debug("No fort to walk to! %s", res)
-            self.log.info('No more spinnable forts within proximity. Returning back to origin')
+            self.log.info(cred + 'No more spinnable Pokestops within proximity. Returning back to origin!' + cdefault)
             self.walk_back_to_origin()
             return False
         for fort_data in destinations:
@@ -355,8 +355,13 @@ class PGoApi:
         if pokemons:
             self.log.debug(cdarkgreen + "Nearby pokemon:" + cgreen + " %s" + cdefault, pokemon_distances)
             self.log.info(cdarkgreen + "Nearby Pokemon:" + cgreen + " %s" + cdefault, ", ".join(map(lambda x: self.pokemon_names[str(x['pokemon_id'])], pokemons)))
+            if not self.inventory.can_attempt_catch():
+                self.log.info(cdarkred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
+                return False
         else:
             self.log.info(cred + "No nearby Pokemon..." + cdefault)
+
+
         catches_successful = False
         for pokemon_distance in pokemon_distances:
             target = pokemon_distance
@@ -418,7 +423,7 @@ class PGoApi:
                         self.log.info((cdarkcyan + "Recycled (ID): " + ccyan + "{0}" + cdarkgray + " / " + cdarkcyan + "New Count: " + cwhite + "{1}" + cdefault).format(item['item_id'], res.get('new_count', 0)))
                     else:
                         self.log.info(cdarkred + "Failed to recycle Item:" + cred + " %s" + cdarkred + ", Code:" + cred + " %s" + cdefault, item['item_id'], response_code)
-                    sleep(2)
+                    sleep(1)
         return self.update_player_inventory()
 
     def get_caught_pokemons(self, inventory_items):
@@ -454,7 +459,7 @@ class PGoApi:
                         else:
                             self.log.debug("Failed to release pokemon %s, %s", pokemon, release_res)
                             self.log.info("Failed to release Pokemon %s", pokemon)
-                        sleep(2)
+                        sleep(1)
 
     def is_pokemon_eligible_for_transfer(self, pokemon):
         return (pokemon.pokemon_id in self.throw_pokemon_ids and not pokemon.is_favorite) \
@@ -491,7 +496,7 @@ class PGoApi:
                                           self.game_master.get(str(pokemon.pokemon_id), PokemonData()))
                 # I don' think we need additional stats for evolved pokemon. Since we do not do anything with it.
                 # evolved_pokemon.pokemon_additional_data = self.game_master.get(pokemon.pokemon_id, PokemonData())
-                self.log.info("Evolved to %s", evolved_pokemon)
+                self.log.info(cdarkgreen + "Evolved Pokemon: " + cgreen + " %s" + cdefault, evolved_pokemon)
                 self.update_player_inventory()
                 return True
             else:
@@ -513,7 +518,7 @@ class PGoApi:
         try:
             self.update_player_inventory()
             if not self.inventory.can_attempt_catch():
-                self.log.info("No balls to catch %s, exiting disk encounter", self.inventory)
+                self.log.info(cdarkred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
                 return False
             encounter_id = lureinfo['encounter_id']
             fort_id = lureinfo['fort_id']
@@ -542,13 +547,13 @@ class PGoApi:
                         return False
                     sleep(2)
             elif resp['result'] == 5:
-                self.log.info("Couldn't catch %s Your pokemon bag was full, attempting to clear and re-try",
+                self.log.info(cred + "Couldn't catch %s Your pokemon bag was full, attempting to clear and re-try" + cdefault,
                               self.pokemon_names.get(str(lureinfo.get('active_pokemon_id', 0)), "NA"))
                 self.cleanup_pokemon()
                 if not retry:
                     return self.disk_encounter_pokemon(lureinfo, retry=True)
             else:
-                self.log.info("Could not start Disk (lure) encounter for pokemon: %s",
+                self.log.info(cdarkred + "Could not start Disk (lure) encounter for pokemon: " + cred + "%s" + cdefault,
                               self.pokemon_names.get(str(lureinfo.get('active_pokemon_id', 0)), "NA"))
         except Exception as e:
             self.log.error("Error in disk encounter %s", e)
@@ -558,7 +563,7 @@ class PGoApi:
         # Update Inventory to make sure we can catch this mon
         self.update_player_inventory()
         if not self.inventory.can_attempt_catch():
-            self.log.info("No balls to catch %s, exiting encounter", self.inventory)
+            self.log.info(cdarkred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
             return False
         encounter_id = pokemon['encounter_id']
         spawn_point_id = pokemon['spawn_point_id']
@@ -615,7 +620,7 @@ class PGoApi:
             self.log.info('Login process failed')
             return False
 
-        self.log.info(cdarkyellow + 'Starting RPC login sequence (app simulation)' + cdefault)
+        self.log.info(cdarkmagenta + 'Starting RPC login sequence (app simulation)' + cdefault)
         # making a standard call, like it is also done by the client
         self.get_player()
         self.get_hatched_eggs()
@@ -650,8 +655,8 @@ class PGoApi:
         if 'auth_ticket' in response:
             self._auth_provider.set_ticket(response['auth_ticket'].values())
 
-        self.log.info(cdarkyellow + 'Finished RPC login sequence (app simulation)' + cdefault)
-        self.log.info(cyellow + 'Login process completed' + cdefault)
+        self.log.info(cdarkmagenta + 'Finished RPC login sequence (app simulation)' + cdefault)
+        self.log.info(cmagenta + 'Login process completed' + cdefault)
 
         return True
 

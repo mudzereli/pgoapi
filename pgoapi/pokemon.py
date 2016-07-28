@@ -64,7 +64,12 @@ class Pokemon:
         self.iv = self.get_iv_percentage()
 
     def __str__(self):
-        return (cmagenta + "CP: " + cwhite + "{2:<4}" + cmagenta + " IV: " + cwhite + "{3:>.0f} %" + cmagenta + " Type: " + cwhite + "{1:<16}" + cdefault).format(self.nickname, self.pokemon_type, self.cp, self.iv)
+        return (\
+            cgray + "[" + cwhite + "{3:2>.0f}%" + cgray + "]" + \
+            cdarkmagenta + "(" + cmagenta + "{2}" + cdarkmagenta + ")" + \
+            cgreen + "{1}" + \
+             cdefault
+                ).format(self.nickname, self.pokemon_type, self.cp, self.iv)
 
     def __repr__(self):
         return self.__str__()

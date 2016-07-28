@@ -294,6 +294,9 @@ class PGoApi:
                 self.log.info(
                     INVENTORY_LOG + cgray + "(top 10 by CP)\n" +
                     get_inventory_data(res, self.pokemon_names, 'cp', 10))
+                self.log.info(
+                    INVENTORY_LOG + cgray + "(top 10 by IV)\n" +
+                    get_inventory_data(res, self.pokemon_names, 'iv', 10))
             self.incubate_eggs()
             self.attempt_evolve(self.inventory.inventory_items)
             self.cleanup_pokemon(self.inventory.inventory_items)
@@ -525,7 +528,7 @@ class PGoApi:
             if not self.inventory.can_attempt_catch():
                 self.log.info(
                     INVENTORY_LOG +
-                    cdred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
+                    cred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
                 return False
         else:
             self.log.info(
@@ -596,7 +599,7 @@ class PGoApi:
                     item_count += item['count'] - recycle_count
                     self.log.info((
                         INVENTORY_LOG +
-                        cyellow + "Recycling (" + cdyellow + "ID" + cyellow + ")" + cdyellow + ": " + cwhite + "{1}" + cyellow + "x" + cwhite + "{0}" + cdef).format(item['item_id'], recycle_count))
+                        cyellow + "Recycling (" + cdyellow + "ID" + cyellow + ")" + cdyellow + ": " + cwhite + "{1}" + cyellow + " x " + cwhite + "{0}" + cdef).format(item['item_id'], recycle_count))
                     res = self.recycle_inventory_item(item_id=item['item_id'], count=recycle_count).call()['responses'][
                         'RECYCLE_INVENTORY_ITEM']
                     response_code = res['result']
@@ -741,7 +744,7 @@ class PGoApi:
             if not self.inventory.can_attempt_catch():
                 self.log.info(
                     INVENTORY_LOG +
-                    cdred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
+                    cred + "No Pokeballs" + cred + ":" + cwhite + " %s", self.inventory)
                 return False
             encounter_id = lureinfo['encounter_id']
             fort_id = lureinfo['fort_id']

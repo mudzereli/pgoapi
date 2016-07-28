@@ -561,9 +561,9 @@ class PGoApi:
             pokeball = self.inventory.take_next_ball(capture_probability)
             self.log.info((
                 ENCOUNTER_LOG +
-                ccyan + "Throwing Ball Type: " + cwhite + "{0}" + ccyan + " @ " + cwhite +
+                ccyan + "Throwing: " + cwhite + "{0}" + ccyan + " @ " + cwhite +
                 "{1:.0f}" + ccyan + "% Chance. Try #" + cwhite + "{2}" + cdef)
-                .format(pokeball, capture_probability.get(pokeball, 0.0) * 100, catch_attempts))
+                .format(get_item_name(pokeball), capture_probability.get(pokeball, 0.0) * 100, catch_attempts))
             r = self.catch_pokemon(
                 normalized_reticle_size=1.950,
                 pokeball=pokeball,
@@ -599,14 +599,14 @@ class PGoApi:
                     item_count += item['count'] - recycle_count
                     self.log.info((
                         INVENTORY_LOG +
-                        cyellow + "Recycling (" + cdyellow + "ID" + cyellow + ")" + cdyellow + ": " + cwhite + "{1}" + cyellow + " x " + cwhite + "{0}" + cdef).format(item['item_id'], recycle_count))
+                        cyellow + "Recycling" + cdyellow + ": " + cwhite + "{1}" + cyellow + " x " + cwhite + "{0}" + cdef).format(get_item_name(item['item_id']), recycle_count))
                     res = self.recycle_inventory_item(item_id=item['item_id'], count=recycle_count).call()['responses'][
                         'RECYCLE_INVENTORY_ITEM']
                     response_code = res['result']
                     if response_code == 1:
                         self.log.info((
                             INVENTORY_LOG +
-                            cmagenta + "New Count (" + cdmagenta + "ID" + cmagenta + ")" + cdmagenta + ": " + cwhite + "{1}" + cmagenta + " x " + cwhite + "{0}" + cdef).format(item['item_id'], res.get('new_count', 0)))
+                            cmagenta + "New Count" + cdmagenta + ": " + cwhite + "{1}" + cmagenta + " x " + cwhite + "{0}" + cdef).format(get_item_name(item['item_id']), res.get('new_count', 0)))
                     else:
                         self.log.info(
                             INVENTORY_LOG +

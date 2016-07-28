@@ -14,6 +14,7 @@ def get_item_name(s_item_id):
             return item.name.replace('ITEM_', '', 1)
     return 'Unknown'
 
+
 def parse_game_master():
     line_count = 0
     game_master = {}
@@ -30,6 +31,7 @@ def parse_game_master():
                 setattr(pokemon_data, attributes[x], line[x])
             game_master[int(line[0])] = pokemon_data
     return game_master
+
 
 def pokemonIVPercentage(pokemon):
     return ((pokemon.get('individual_attack', 0) + pokemon.get('individual_stamina', 0) + pokemon.get(
@@ -61,6 +63,38 @@ def get_pokemon_by_long_id(pokemon_id, res, poke_names):
         if not pokemon_data.get('is_egg', False) and pokemon_data.get('id', 'NA') == pokemon_id:
             return Pokemon(pokemon_data, poke_names)
     return None
+
+
+def get_item_name(item):
+    if item == Enum_Items.ITEM_POKE_BALL:
+        return "Poke Ball"
+    elif item == Enum_Items.ITEM_GREAT_BALL:
+        return "Great Ball"
+    elif item == Enum_Items.ITEM_ULTRA_BALL:
+        return "Ultra Ball"
+    elif item == Enum_Items.ITEM_MASTER_BALL:
+        return "Master Ball"
+    elif item == Enum_Items.ITEM_POTION:
+        return "Potion"
+    elif item == Enum_Items.ITEM_SUPER_POTION:
+        return "Super Potion"
+    elif item == Enum_Items.ITEM_HYPER_POTION:
+        return "Hyper Potion"
+    elif item == Enum_Items.ITEM_MAX_POTION:
+        return "Max Potion"
+    elif item == Enum_Items.ITEM_BLUK_BERRY:
+        return "Bluk Berry"
+    elif item == Enum_Items.ITEM_NANAB_BERRY:
+        return "Nana Berry"
+    elif item == Enum_Items.ITEM_REVIVE:
+        return "Revive"
+    elif item == Enum_Items.ITEM_MAX_REVIVE:
+        return "Max Revive"
+    elif item == Enum_Items.ITEM_RAZZ_BERRY:
+        return "Razz Berry"
+    else:
+        return "Unknown Item"
+
 
 DISK_ENCOUNTER = {0: "UNKNOWN",
                   1: "SUCCESS",

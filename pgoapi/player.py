@@ -11,7 +11,8 @@ class Player:
         self.parse_values()
 
     def parse_values(self):
-        self.username = self.player_data.get('username', 'NA')
+        # self.username = self.player_data.get('username', 'NA')
+        self.username = "**********"
         self.team = self.player_data.get('team', 0)
         self.max_pokemon_storage = self.player_data.get('max_pokemon_storage', 0)
         self.creation_timestamp_ms = self.player_data.get('creation_timestamp_ms', 0)

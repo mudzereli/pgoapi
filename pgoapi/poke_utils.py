@@ -1,10 +1,11 @@
 from __future__ import absolute_import
+
 import os
+
 from pgoapi.pokemon import Pokemon
 from operator import attrgetter
 from pgoapi.game_master import PokemonData
 from pgoapi.protos.POGOProtos.Inventory import Item_pb2 as Enum_Items
-import csv
 
 
 def get_item_name(s_item_id):
@@ -13,7 +14,6 @@ def get_item_name(s_item_id):
         if item_id == s_item_id:
             return item.name.replace('ITEM_', '', 1)
     return 'Unknown'
-
 
 def parse_game_master():
     line_count = 0
@@ -32,11 +32,9 @@ def parse_game_master():
             game_master[int(line[0])] = pokemon_data
     return game_master
 
-
-def pokemonIVPercentage(pokemon):
+def pokemon_iv_percentage(pokemon):
     return ((pokemon.get('individual_attack', 0) + pokemon.get('individual_stamina', 0) + pokemon.get(
         'individual_defense', 0) + 0.0) / 45.0) * 100.0
-
 
 def get_inventory_data(res, poke_names, order, nlimit):
     inventory_delta = res['responses']['GET_INVENTORY'].get('inventory_delta', {})
@@ -57,11 +55,11 @@ def create_capture_probability(capture_probability):
         return dict(zip(capture_balls, capture_rate))
 
 
-def get_pokemon_by_long_id(pokemon_id, res, poke_names):
+def get_pokemon_by_long_id(pokemon_id, res):
     for inventory_item in res:
         pokemon_data = inventory_item['inventory_item_data'].get('pokemon_data', {})
         if not pokemon_data.get('is_egg', False) and pokemon_data.get('id', 'NA') == pokemon_id:
-            return Pokemon(pokemon_data, poke_names)
+            return Pokemon(pokemon_data)
     return None
 
 

@@ -35,11 +35,7 @@ from collections import defaultdict
 from itertools import chain
 from time import time
 
-import gevent
 import six
-from cachetools import TTLCache
-from gevent.coros import BoundedSemaphore
-
 from pgoapi.auth_google import AuthGoogle
 from pgoapi.auth_ptc import AuthPtc
 from pgoapi.exceptions import AuthException, ServerBusyOrOfflineException
@@ -129,12 +125,12 @@ class PGoApi:
         self._last_got_map_objects = 0
         self._map_objects_rate_limit = 5.0
         self.map_objects = {}
-        self.encountered_pokemons = TTLCache(maxsize=120, ttl=self._map_objects_rate_limit * 2)
+        #self.encountered_pokemons = TTLCache(maxsize=120, ttl=self._map_objects_rate_limit * 2)
 
         self.start_time = time()
         self.exp_start = None
         self.exp_current = None
-        self.sem = BoundedSemaphore(1)
+        #self.sem = BoundedSemaphore(1)
         self.persist_lock = False
         self.sleep_mult = self.config.get("SLEEP_MULT", 1.5)
         self.MIN_ITEMS = {}
@@ -252,9 +248,9 @@ class PGoApi:
                 return False
 
             if self._auth_provider is None or not self._auth_provider.is_login():
-            self.log.info(
-                LOGIN_LOG +
-                cred + 'Not logged in' + cdef)
+                self.log.info(
+                    LOGIN_LOG +
+                    cred + 'Not logged in' + cdef)
                 return False
 
             player_position = self.get_position()
@@ -271,10 +267,10 @@ class PGoApi:
             try:
                 response = request.request(api_endpoint, self._req_method_list[id(gevent.getcurrent())], player_position)
             except ServerBusyOrOfflineException:
-            self.log.info(
-                LOGIN_LOG +
-                cred + 'Server seems to be busy or offline - try again! (' +
-                cwhite + '%s' + cred + ')' + cdef, e)
+                self.log.info(
+                    LOGIN_LOG +
+                    cred + 'Server seems to be busy or offline - try again! (' +
+                    cwhite + '%s' + cred + ')' + cdef, e)
 
             # cleanup after call execution
             self.log.debug('Cleanup of request!')
@@ -339,7 +335,7 @@ class PGoApi:
     def snipe_pokemon(self, lat, lng):
         self.cond_lock(persist=True)
         try:
-            self.gsleep(2) # might not be needed, used to prevent main thread from issuing a waiting-for-lock server query too quickly
+            self.gsleep(2)  # might not be needed, used to prevent main thread from issuing a waiting-for-lock server query too quickly
             curr_lat = self._posf[0]
             curr_lng = self._posf[1]
 
@@ -638,9 +634,9 @@ class PGoApi:
                 for item_id, amount in six.iteritems(items):
                     reward += ', ' + str(amount) + 'x ' + get_item_name(item_id)
             else:
-            self.log.info(
-                POKESTOP_LOG +
-                cred + "Pokestop Used but no rewards! Soft Ban?" + cdef)
+                self.log.info(
+                    POKESTOP_LOG +
+                    cred + "Pokestop Used but no rewards! Soft Ban?" + cdef)
             self.visited_forts[fort['id']] = fort
         elif result == 4:
             self.log.debug("Fort spinned but your inventory is full : %s", res)

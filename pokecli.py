@@ -37,8 +37,6 @@ import os.path
 import socket
 from time import sleep
 
-import gevent
-import zerorpc
 from geopy.geocoders import GoogleV3
 from six import PY2, iteritems
 
@@ -47,8 +45,6 @@ from pgoapi import PGoApi
 
 logger = logging.getLogger(__name__)
 
-
-<<<<<<< HEAD
 cdarkgray = '\033[1;30m'
 cblack = '\033[0;30m'
 cred = '\033[1;31m'
